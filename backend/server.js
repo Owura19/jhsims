@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Enable CORS for frontend
 app.use(cors({
-    origin: 'http://localhost:5173',  // Allow only your frontend
+    origin: ['http://localhost:5173', 'https://jhsims.vercel.app'], // Allow only your frontend
     credentials: true                 // Allow cookies/session if needed
 }));
 
