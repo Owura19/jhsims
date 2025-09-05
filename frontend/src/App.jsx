@@ -6,6 +6,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 import StudentList from './pages/StudentList';
 
+
+{/* Build trigger: force Vercel to rebuild */ }
+
 function App() {
   return (
     <Routes>
