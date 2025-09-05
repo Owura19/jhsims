@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // 👈 Import AuthContext hook
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -12,30 +11,22 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const { setUser } = useAuth(); // 👈 Access setUser from AuthContext
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setLoading(true);
-
         try {
             const res = await api.post('/auth/login', { email, password });
 
-            // Save token and user to localStorage
+            // Save to localStorage
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            // Update context so app knows immediately
-            setUser(res.data.user);
+            // Pass user up if needed (via props)
+            if (props.setUser) props.setUser(res.data.user);
 
-            // Redirect to dashboard
             navigate('/dashboard');
         } catch (err) {
-            setError('Invalid login credentials');
-            console.error(err);
-        } finally {
-            setLoading(false);
+            setError('Invalid credentials');
         }
     };
 
