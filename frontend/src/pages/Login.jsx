@@ -1,12 +1,12 @@
 // src/pages/Login.jsx
 
 import { useState } from 'react';
-import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('admin@example.com');
+    const [password, setPassword] = useState('password123');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -18,19 +18,23 @@ export default function Login() {
         setLoading(true);
 
         try {
+            console.log('Sending login request...');
             const res = await api.post('/auth/login', { email, password });
 
-            // ✅ Save to localStorage
+            console.log('Login response:', res.data);
+
+            // Save to localStorage
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            // ✅ Redirect to dashboard
+            console.log('Token and user saved to localStorage');
+
+            // Redirect
             navigate('/dashboard');
 
         } catch (err) {
-            // Only show error if backend actually failed
-            setError('Invalid login credentials');
             console.error('Login error:', err.response?.data || err.message);
+            setError('Invalid login credentials');
         } finally {
             setLoading(false);
         }
@@ -44,13 +48,14 @@ export default function Login() {
                         Sign in to JHSIMS
                     </h2>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                            {error}
-                        </div>
-                    )}
 
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        {error}
+                    </div>
+                )}
+
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
                             <label htmlFor="email" className="sr-only">Email</label>
