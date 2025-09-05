@@ -14,19 +14,25 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
+
         try {
             const res = await api.post('/auth/login', { email, password });
 
-            // Save to localStorage
+            // ✅ Save to localStorage
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            // Pass user up if needed (via props)
-            if (props.setUser) props.setUser(res.data.user);
-
+            // ✅ Redirect to dashboard
             navigate('/dashboard');
+
         } catch (err) {
-            setError('Invalid credentials');
+            // Only show error if backend actually failed
+            setError('Invalid login credentials');
+            console.error('Login error:', err.response?.data || err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
